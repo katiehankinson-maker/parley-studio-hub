@@ -39,7 +39,6 @@ export const Route = createFileRoute("/")({
 function Index() {
   const track = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
-  const [copied, setCopied] = useState(false);
   const lock = useRef(false);
 
   const go = useCallback((i: number) => {
@@ -78,13 +77,6 @@ function Index() {
     };
   }, [go]);
 
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(EMAIL);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1800);
-    } catch {}
-  };
 
   return (
     <main className="p-sans relative h-dvh w-screen overflow-hidden">
@@ -123,9 +115,6 @@ function Index() {
             <p className="p-line m-0">{DESC}</p>
             <div className="p-mono pointer-events-auto flex flex-wrap items-center gap-x-4 gap-y-3 text-sm">
               <a href={`mailto:${EMAIL}`} className="p-focus underline underline-offset-4">{EMAIL}</a>
-              <button type="button" onClick={copy} className="p-btn p-focus px-2.5 py-1 text-xs uppercase tracking-wider">
-                {copied ? "Copied" : "Copy"}
-              </button>
               <a href={SUBSTACK} target="_blank" rel="noreferrer" className="p-focus underline underline-offset-4">Substack ↗</a>
             </div>
           </div>
