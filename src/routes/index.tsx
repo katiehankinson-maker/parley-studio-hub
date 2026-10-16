@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+const INTAKE_ENDPOINT = "";
+
 const EMAIL = "question@weareparley.studio";
 const SUBSTACK = "https://weareparley.substack.com";
 const DESC =
@@ -35,7 +37,10 @@ export const Route = createFileRoute("/")({
 function Index() {
   const track = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
+  const [open, setOpen] = useState(false);
   const lock = useRef(false);
+  const openRef = useRef(false);
+  openRef.current = open;
 
   const go = useCallback((i: number) => {
     const el = track.current;
@@ -59,6 +64,7 @@ function Index() {
       setTimeout(() => (lock.current = false), 700);
     };
     const onKey = (e: KeyboardEvent) => {
+      if (openRef.current) return;
       const cur = Math.round(el.scrollLeft / el.clientWidth);
       if (e.key === "ArrowRight") { e.preventDefault(); go(cur + 1); }
       if (e.key === "ArrowLeft") { e.preventDefault(); go(cur - 1); }
@@ -72,7 +78,6 @@ function Index() {
       window.removeEventListener("keydown", onKey);
     };
   }, [go]);
-
 
   return (
     <main className="p-sans relative h-dvh w-screen overflow-hidden">
@@ -107,16 +112,104 @@ function Index() {
 
         <div>
           <h1 className="p-word">Parley</h1>
-          <div className="mt-6 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <div className="p-bottom mt-5 flex flex-col gap-4 lg:mt-6 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
             <p className="p-line m-0">{DESC}</p>
-            <div className="p-mono pointer-events-auto flex flex-wrap items-center gap-x-4 gap-y-3 text-sm">
-              <a href={`mailto:${EMAIL}`} className="p-focus underline underline-offset-4">{EMAIL}</a>
-              <a href={SUBSTACK} target="_blank" rel="noreferrer" className="p-focus underline underline-offset-4">Substack ↗</a>
+            <div className="pointer-events-auto flex flex-col gap-4 sm:flex-row sm:items-end lg:gap-8">
+              <div className="flex flex-col gap-2">
+                <p className="p-mono p-note m-0">Occasional notes on getting unstuck, and invitations to our gatherings.</p>
+                <a href={SUBSTACK} target="_blank" rel="noreferrer" className="p-cta p-focus">Subscribe on Substack →</a>
+              </div>
+              <div className="flex flex-col gap-2">
+                <p className="p-mono p-note m-0">Stuck on something?</p>
+                <button type="button" onClick={() => setOpen(true)} className="p-cta p-cta-outline p-focus">Tell us about it</button>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      {open && <IntakeModal onClose={() => setOpen(false)} />}
     </main>
+  );
+}
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function IntakeModal({ onClose }: { onClose: () => void }) {
+  const [f, setF] = useState({ name: "", email: "", company: "", challenge: "" });
+  const [err, setErr] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [done, setDone] = useState(false);
+  const first = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    first.current?.focus();
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+    setF({ ...f, [k]: e.target.value });
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const data = {
+      name: f.name.trim().slice(0, 100),
+      email: f.email.trim().slice(0, 255),
+      company: f.company.trim().slice(0, 200),
+      challenge: f.challenge.trim().slice(0, 4000),
+    };
+    if (!data.email) return setErr("Please add your email.");
+    if (!EMAIL_RE.test(data.email)) return setErr("That email doesn't look right.");
+    setErr("");
+    setBusy(true);
+    try {
+      if (INTAKE_ENDPOINT) {
+        const r = await fetch(INTAKE_ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+        if (!r.ok) throw new Error();
+      } else {
+        const subject = `Stuck on something: ${data.name || data.email}`;
+        const body = `Name: ${data.name}\nEmail: ${data.email}\nCompany and role: ${data.company}\n\nWhat's the challenge?\n${data.challenge}`;
+        window.location.href = `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      }
+      setDone(true);
+    } catch {
+      setErr("Something went wrong. Please try again.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="p-overlay" onClick={onClose}>
+      <div role="dialog" aria-modal="true" aria-labelledby="intake-title" className="p-card" onClick={(e) => e.stopPropagation()}>
+        <button type="button" onClick={onClose} className="p-mono p-close p-focus">Close</button>
+        {done ? (
+          <div className="py-6">
+            <h2 id="intake-title" className="p-modal-title">Thank you.</h2>
+            <p className="mt-3 opacity-80">We'll reply within a couple of days.</p>
+          </div>
+        ) : (
+          <>
+            <h2 id="intake-title" className="p-modal-title">Tell us what you're stuck on</h2>
+            <p className="mt-2 mb-5 opacity-80">A few lines is plenty. A real person reads every one and replies.</p>
+            <form onSubmit={submit} noValidate className="flex flex-col gap-4">
+              <label className="p-field"><span>Name</span><input ref={first} value={f.name} onChange={set("name")} maxLength={100} autoComplete="name" /></label>
+              <label className="p-field"><span>Email *</span><input type="email" required value={f.email} onChange={set("email")} maxLength={255} autoComplete="email" aria-invalid={!!err} /></label>
+              <label className="p-field"><span>Company and role</span><input value={f.company} onChange={set("company")} maxLength={200} autoComplete="organization-title" /></label>
+              <label className="p-field"><span>What's the challenge?</span><textarea rows={4} value={f.challenge} onChange={set("challenge")} maxLength={4000} /></label>
+              {err && <p role="alert" className="p-mono p-accent m-0 text-sm">{err}</p>}
+              <button type="submit" disabled={busy} className="p-cta p-focus self-start">{busy ? "Sending…" : "Send"}</button>
+            </form>
+          </>
+        )}
+      </div>
+    </div>
   );
 }
 
