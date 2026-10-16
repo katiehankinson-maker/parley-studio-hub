@@ -110,19 +110,19 @@ function Index() {
           </div>
         </div>
 
-        <div>
-          <h1 className="p-word">Parley</h1>
-          <div className="p-bottom mt-5 flex flex-col gap-4 lg:mt-6 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
-            <p className="p-line m-0">{DESC}</p>
-            <div className="pointer-events-auto flex flex-col gap-4 sm:flex-row sm:items-end lg:gap-8">
-              <div className="flex flex-col gap-2">
-                <p className="p-mono p-note m-0">Occasional notes on getting unstuck, and invitations to our gatherings.</p>
-                <a href={SUBSTACK} target="_blank" rel="noreferrer" className="p-cta p-focus">Subscribe on Substack →</a>
-              </div>
-              <div className="flex flex-col gap-2">
-                <p className="p-mono p-note m-0">Stuck on something?</p>
-                <button type="button" onClick={() => setOpen(true)} className="p-cta p-cta-outline p-focus">Tell us about it</button>
-              </div>
+        <div className="p-bottom grid grid-cols-1 items-end gap-7 md:grid-cols-[minmax(0,1fr)_auto] md:gap-12 lg:gap-20">
+          <div className="min-w-0">
+            <h1 className="p-word">Parley</h1>
+            <p className="p-line mt-4 md:mt-5">{DESC}</p>
+          </div>
+          <div className="pointer-events-auto flex flex-col gap-5 md:w-[248px]">
+            <div className="flex flex-col gap-2">
+              <p className="p-mono p-note m-0">Occasional notes on getting unstuck, and invitations to our gatherings.</p>
+              <a href={SUBSTACK} target="_blank" rel="noreferrer" className="p-cta p-focus w-full">Subscribe on Substack →</a>
+            </div>
+            <div className="flex flex-col gap-2">
+              <p className="p-mono p-note m-0">Stuck on something?</p>
+              <button type="button" onClick={() => setOpen(true)} className="p-cta p-cta-outline p-focus w-full">Tell us about it</button>
             </div>
           </div>
         </div>
