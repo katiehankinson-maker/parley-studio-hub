@@ -2,7 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import p1 from "@/assets/p1.jpg.asset.json";
 import p2 from "@/assets/p2.jpg.asset.json";
-import p3 from "@/assets/p3.jpg.asset.json";
 import p4 from "@/assets/p4.jpg.asset.json";
 import p5 from "@/assets/p5.jpg.asset.json";
 
@@ -17,7 +16,6 @@ const OG_IMAGE = `https://weareparley.studio${p1.url}`;
 const PHOTOS = [
   { src: p1.url, alt: "Black and white prints on a table with guests mingling behind" },
   { src: p2.url, alt: "A guest photographing objects laid out on a table" },
-  { src: p3.url, alt: "A panel seated beneath a screen beside a rubber plant" },
   { src: p4.url, alt: "An audience with their backs to us, watching a panel" },
   { src: p5.url, alt: "Guests talking around a table of objects in a loft, seen from above" },
 ];
