@@ -6,7 +6,7 @@ import p3 from "@/assets/p3.jpg.asset.json";
 import p4 from "@/assets/p4.jpg.asset.json";
 import p5 from "@/assets/p5.jpg.asset.json";
 
-const EMAIL = "ask@weareparley.studio";
+const EMAIL = "question@weareparley.studio";
 const SUBSTACK = "https://weareparley.substack.com";
 const DESC =
   "Parley is a strategy and advisory practice that helps business leaders get unstuck on consequential challenges. We bring different minds together, through collaborative work, conversations and gatherings, to open new perspectives and map a path to action.";
