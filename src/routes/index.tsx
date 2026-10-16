@@ -9,7 +9,9 @@ import p5 from "@/assets/p5.jpg.asset.json";
 const EMAIL = "ask@weareparley.studio";
 const SUBSTACK = "https://weareparley.substack.com";
 const DESC =
-  "Parley helps leaders get unstuck on consequential business challenges, bringing different minds together to open new perspectives and map a way forward.";
+  "Parley is a strategy and advisory practice that helps business leaders get unstuck on consequential challenges. We bring different minds together, through collaborative work, conversations and gatherings, to open new perspectives and map a path to action.";
+const META_DESC =
+  "Parley is a strategy and advisory practice that helps business leaders get unstuck on consequential challenges.";
 const OG_IMAGE = `https://weareparley.studio${p1.url}`;
 
 const PHOTOS = [
@@ -24,7 +26,7 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Parley" },
-      { name: "description", content: DESC },
+      { name: "description", content: META_DESC },
       { property: "og:title", content: "Parley" },
       { property: "og:description", content: DESC },
       { property: "og:type", content: "website" },
