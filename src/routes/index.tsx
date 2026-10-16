@@ -1,9 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import p1 from "@/assets/p1.jpg.asset.json";
-import p2 from "@/assets/p2.jpg.asset.json";
-import p4 from "@/assets/p4.jpg.asset.json";
-import p5 from "@/assets/p5.jpg.asset.json";
 
 const EMAIL = "question@weareparley.studio";
 const SUBSTACK = "https://weareparley.substack.com";
@@ -11,13 +7,13 @@ const DESC =
   "Parley is a strategy and advisory practice that helps business leaders get unstuck on consequential challenges. We bring different minds together, through collaborative work, conversations and gatherings, to open new perspectives and map a path to action.";
 const META_DESC =
   "Parley is a strategy and advisory practice that helps business leaders get unstuck on consequential challenges.";
-const OG_IMAGE = `https://weareparley.studio${p1.url}`;
+const OG_IMAGE = "/images/p1.jpg";
 
 const PHOTOS = [
-  { src: p1.url, alt: "Black and white prints on a table with guests mingling behind" },
-  { src: p2.url, alt: "A guest photographing objects laid out on a table" },
-  { src: p4.url, alt: "An audience with their backs to us, watching a panel" },
-  { src: p5.url, alt: "Guests talking around a table of objects in a loft, seen from above" },
+  { src: "/images/p1.jpg", alt: "Black and white prints on a table with guests mingling behind" },
+  { src: "/images/p2.jpg", alt: "A guest photographing objects laid out on a table" },
+  { src: "/images/p3.jpg", alt: "An audience with their backs to us, watching a panel" },
+  { src: "/images/p4.jpg", alt: "Guests talking around a table of objects in a loft, seen from above" },
 ];
 
 export const Route = createFileRoute("/")({
